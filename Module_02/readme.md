@@ -9,3 +9,7 @@
 
 ## Физическое моделирование
 ![Phusical Modeling](physical_model.png)
+
+
+## Код для создания таблиц по схеме модели
+[SQL файл sales](sales.sql)
