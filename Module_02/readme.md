@@ -1,5 +1,7 @@
 # Задания Module-02
-Для создания моделей использовал sqldbm на триале
+[К оглавлению](https://github.com/Rusakltd/DE-101/blob/main/readme.md)
+
+ > Для создания моделей использовал sqldbm на триале
 
 ## Концептуальная моделирование
 ![Conceptual Modeling](conceptual_model.png)
@@ -11,9 +13,12 @@
 ![Phusical Modeling](physical_model.png)
 
 ## Код для создания таблиц по схеме модели
-[SQL файл sales](sales.sql)
+[SQL файл с кодом на создание таблиц по модели](create_tables.sql)
+___
 
 ## Заполнение таблиц
+[SQL файл с кодом по заполнению таблиц](insert_to_tables.sql)
+
 При insert ... select решил такие нюансы:
 ### Geography
 1. В основной таблице sales есть null значение в postal_code - их при заполнении
