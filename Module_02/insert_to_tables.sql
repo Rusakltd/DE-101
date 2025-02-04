@@ -4,38 +4,40 @@ select 100+row_number() over (),
 ship_mode from (select distinct ship_mode from orders) a;
 
 --- 2. Insert into Geography
-INSERT INTO geography (geo_id, postal_code, city, state, region, country)
+INSERT INTO geography (geo_id, country, city, state, region, postal_code)
 SELECT 
     100000 + ROW_NUMBER() over (),
-    postal_code,
+    country,
     city,
     state,
     region,
-    country
-FROM orders
-group by postal_code, city, state, region, country
-having postal_code is not null;
+    postal_code
+FROM (select distinct country, city, state, postal_code from orders) a;
+
+-- Fix postal_code
+UPDATE geography
+SET postal_code = '05401'
+where city = 'Burlington' and state = 'Vermont' and postal_code is null;
 
 --- 3. Insert Calendar
 -- Change to numeric
-ALTER TABLE calendar
-	ALTER COLUMN year TYPE numeric USING lower(year)::numeric;
-	ALTER COLUMN month TYPE numeric USING lower(month)::numeric;
-	ALTER COLUMN week TYPE numeric USING lower(week)::numeric;
-	ALTER COLUMN week_day TYPE numeric USING lower(week_day)::numeric;
-
---- Insert into Calendar
-INSERT INTO calendar (order_date, ship_date, year, quarter, month, week, week_day)
-SELECT DISTINCT
-    order_date,
-    ship_date,
-    EXTRACT(YEAR FROM order_date) AS year,
-    EXTRACT(QUARTER FROM order_date) AS quarter,
-    EXTRACT(MONTH FROM order_date) AS month,
-    EXTRACT(WEEK FROM order_date) AS week,
-    EXTRACT(DOW FROM order_date) AS week_day
-FROM orders
-ON CONFLICT (order_date, ship_date) DO NOTHING; -- Skip composite key already exists
+insert into calendar
+select 
+to_char(date,'yyyymmdd')::int as dateid,  
+       extract('year' from date)::int as year,
+       extract('quarter' from date)::int as quarter,
+       extract('month' from date)::int as month,
+       extract('week' from date)::int as week,
+       date::date,
+       to_char(date, 'dy') as week_day,
+       extract('day' from
+               (date + interval '2 month - 1 day')
+              ) = 29
+       as leap
+  from generate_series(date '2000-01-01',
+                       date '2030-01-01',
+                       interval '1 day')
+       as t(date);
 
 --- 4. Insert into Product
 INSERT INTO product (product_id, category, subcategory, segment, product_name)

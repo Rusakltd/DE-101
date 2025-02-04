@@ -7,7 +7,7 @@
 DROP TABLE IF EXISTS Calendar;
 CREATE TABLE Calendar
 (
- dateid      serial NOT NULL,
+ dateid     serial NOT NULL,
  year       int NOT NULL,
  quarter    int NOT NULL,
  month      int NOT NULL,
@@ -15,17 +15,17 @@ CREATE TABLE Calendar
  date       date NOT NULL,
  week_day   varchar(20) NOT NULL,
  leap       varchar(20) NOT NULL,
- CONSTRAINT PK_4 PRIMARY KEY ( date_id )
+ CONSTRAINT PK_4 PRIMARY KEY ( dateid )
 );
 
 -- ************************************** Geography
 DROP TABLE IF EXISTS Geography;
 CREATE TABLE Geography
 (
- geo_id      int NOT NULL,
+ geo_id      serial NOT NULL,
  country     varchar(25) NOT NULL,
  city        varchar(25) NOT NULL,
- "state"     varchar(25) NOT NULL,
+ state     varchar(25) NOT NULL,
  region      varchar(9) NOT NULL,
  postal_code int NOT NULL,
  CONSTRAINT PK_5 PRIMARY KEY ( geo_id )
