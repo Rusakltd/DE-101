@@ -24,14 +24,40 @@ ___
 При insert ... select решил такие нюансы:
 
 ### Geography
-1. В основной таблице sales есть null значение в postal_code - их при заполнении
-таблицы geography убрал, т.к. если считать что это обязательное поле, то данные 
-должны быть, а null это ошибочные данные.
-- Как вариант можно еще добавить через Insert все geoid по postal_code по городу где нет postal_code
-2. Также по postal_code, есть дубль где одному postal_code соответствуют два значения города, проверил по факту, там один postal_code на два города. Как итог оставил уникальные geo_id для каждого из них.
+В основной таблице sales есть null значение в postal_code - Добавил через Update все geoid по postal_code по штату и городу где нет postal_code
+```
+UPDATE geography
+SET postal_code = '05401'
+where city = 'Burlington' and state = 'Vermont' and postal_code is null;
+```
 
 ### Calendar
-Так как у нас два ключа `ship_date` и `order_date`, то тут три возможных варианта:
+Обновленное решение:
+Сгенерировал календарь через скрипт и стал одним вместо двух:
+```
+insert into calendar
+select 
+to_char(date,'yyyymmdd')::int as dateid,  
+       extract('year' from date)::int as year,
+       extract('quarter' from date)::int as quarter,
+       extract('month' from date)::int as month,
+       extract('week' from date)::int as week,
+       date::date,
+       to_char(date, 'dy') as week_day,
+       extract('day' from
+               (date + interval '2 month - 1 day')
+              ) = 29
+       as leap
+  from generate_series(date '2000-01-01',
+                       date '2030-01-01',
+                       interval '1 day')
+       as t(date);
+```
+
+<details>
+  <summary>Старое первое решение</summary>
+  
+  Так как у нас два ключа `ship_date` и `order_date`, то тут три возможных варианта:
 - Сделать composite key и через него заполнить уник значениями из sales
 - Разделить значения по разными столбцам в Calendar для каждого из типов дат
 - Разбить каждую строку на две с данными по `ship_date` и `order_date` и добавить тип даты.
@@ -44,6 +70,8 @@ ALTER TABLE calendar
 	ALTER COLUMN week TYPE numeric USING lower(week)::numeric;
 	ALTER COLUMN week_day TYPE numeric USING lower(week_day)::numeric;
 ```
+</details>
+
 ### Sales
 - Также как и в Geography при insert убрал строки где `postal_code` is null
 - Перевел столбцы `quantity` и `row_id` из integer в оригинальной таблице в
