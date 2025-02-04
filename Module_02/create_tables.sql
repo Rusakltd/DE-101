@@ -7,14 +7,15 @@
 DROP TABLE IF EXISTS Calendar;
 CREATE TABLE Calendar
 (
- ship_date  date NOT NULL,
- order_date date NOT NULL,
- year       int4range NOT NULL,
- quarter    varchar(5) NOT NULL,
- month      int4range NOT NULL,
- week       int4range NOT NULL,
- week_day   int4range NOT NULL,
- CONSTRAINT PK_4 PRIMARY KEY ( ship_date, order_date )
+ dateid      serial NOT NULL,
+ year       int NOT NULL,
+ quarter    int NOT NULL,
+ month      int NOT NULL,
+ week       int NOT NULL,
+ date       date NOT NULL,
+ week_day   varchar(20) NOT NULL,
+ leap       varchar(20) NOT NULL,
+ CONSTRAINT PK_4 PRIMARY KEY ( date_id )
 );
 
 -- ************************************** Geography
