@@ -81,3 +81,15 @@ int4range
 1. Развернул PostgreSQL в Amazon Lightsail
 2. Подключился с помощью DBeaver, развернул staging - [SQL Файл с кодом](stg.orders.sql)
 3. Развернул dw - [SQL Файл с кодом](from_stg_to_dw.sql)
+
+## Подключение к BI
+Для себя выбрал подключиться из PowerBI к развернутой PostgreSQL в Amazon Lightsail
+1.Выловил проблему при подключении:
+```
+An error happened while reading data from the provider: 'The remote certificate is invalid according to the validation procedure
+```
+Как решил её:
+1. Установил [ODBC драйвер](https://www.postgresql.org/ftp/odbc/releases/)
+2. Настроил их через ODBC Data Source Administrator: [ссылка на хелп](https://community.fabric.microsoft.com/t5/Service/The-remote-certificate-is-invalid-according-to-the-validation/m-p/1341281)
+3. Подключился к PostgreSQL из BI через ODBC
+![Power BI](power_bi.jpeg)
